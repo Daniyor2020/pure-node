@@ -18,7 +18,6 @@ const users = [
 ];
 
 const logger = (req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
     next();
 }
 
@@ -29,20 +28,25 @@ const jsonMiddleware = (req, res, next) => {
     if (req.headers['content-type'] === 'application/json') {
         let body = '';
         req.on('data', chunk => {
-            body += chunk.toString();
+            body += chunk;
         });
         req.on('end', () => {
             req.body = JSON.parse(body);
+            users.push(req.body);
             next();
         });
     } else {
+        console.log('Not JSON');
         next();
     }
 }
 
 
+
+
 const getUsersHandler = (req, res) => {
-res.write(JSON.stringify(users));
+    console.log(req.url);
+    res.write(JSON.stringify(users));
     res.end();
 }
 
@@ -72,9 +76,11 @@ const server = createServer((req, res) => {
 
     logger(req, res, () => {
         jsonMiddleware(req, res, () => {
-            if (req.url === '/users') {
+
+            if (req.url === '/api/users') {
+
                 getUsersHandler(req, res);
-            } else if (req.url.startsWith('/users/')) {
+            } else if (req.url.startsWith('/api/users/')) {
                 getUserByIdHandler(req, res);
             } else {
                 notFoundHandler(req, res);
