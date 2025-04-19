@@ -1,5 +1,5 @@
 import  http from 'http';
-const port = process.env.PORT || 8000;
+const port = process.env.PORT;
 import fs from 'fs/promises';
 import path from 'path';
 import url from 'url';
@@ -7,7 +7,7 @@ import url from 'url';
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-console.log(__dirname, __filename);
+console.log("port=",port);
 const server = http.createServer(async(req, res) => {
 
 
